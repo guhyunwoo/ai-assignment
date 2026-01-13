@@ -1,8 +1,8 @@
 package bsm.insert.aiassignment.global.config
 
-import bsm.insert.aiassignment.global.security.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val authFilter: AuthFilter
 ) {
 
     @Bean
@@ -26,15 +26,28 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/h2-console/**").permitAll()
-                    .anyRequest().authenticated()
-            }
-            .headers { it.frameOptions { frame -> frame.disable() } }
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .httpBasic { it.disable() }
+            .formLogin { it.disable() }
+            .logout { it.disable() }
+
+        http.sessionManagement { session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        }
+
+        http.addFilterBefore(
+            authFilter,
+            UsernamePasswordAuthenticationFilter::class.java
+        )
+
+        http.authorizeHttpRequests { authorize ->
+            authorize
+                .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated()
+        }
+
+        http.headers { it.frameOptions { frame -> frame.disable() } }
 
         return http.build()
     }

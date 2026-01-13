@@ -25,8 +25,10 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 jwt:
-  secret: test-secret-key-for-testing-purposes-must-be-32-chars-minimum
-  expiration: 86400000
+  expiration-time: 86400000
+  prefix: Bearer
+  header: Authorization
+  secret-key: dGVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLXB1cnBvc2VzLW11c3QtYmUtMzItY2hhcnMtbWluaW11bQ==
 
 openai:
   api-key: test-api-key

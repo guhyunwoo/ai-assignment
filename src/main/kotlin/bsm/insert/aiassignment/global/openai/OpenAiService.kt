@@ -1,6 +1,6 @@
 package bsm.insert.aiassignment.global.openai
 
-import bsm.insert.aiassignment.domain.chat.entity.Chat
+import bsm.insert.aiassignment.domain.chat.domain.Chat
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole

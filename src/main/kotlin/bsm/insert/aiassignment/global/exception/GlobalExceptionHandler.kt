@@ -1,5 +1,6 @@
 package bsm.insert.aiassignment.global.exception
 
+import bsm.insert.aiassignment.global.exception.BusinessBaseException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -15,12 +16,12 @@ data class ErrorResponse(
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
-    @ExceptionHandler(BusinessException::class)
-    fun handleBusinessException(e: BusinessException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(e.status).body(
+    @ExceptionHandler(BusinessBaseException::class)
+    fun handleBusinessBaseException(e: BusinessBaseException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(e.getStatus()).body(
             ErrorResponse(
-                status = e.status.value(),
-                message = e.message
+                status = e.getStatus().value(),
+                message = e.getErrorMessageContent()
             )
         )
     }
