@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ai-assignment
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ai_chatbot
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-here-must-be-at-least-32-characters}
+  expiration: 86400000 # 24 hours
+
+openai:
+  api-key: ${OPENAI_API_KEY:your-openai-api-key}
+  model: gpt-3.5-turbo
+
+server:
+  port: 8080
