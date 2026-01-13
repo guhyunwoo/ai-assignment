@@ -1,5 +1,7 @@
 package bsm.insert.aiassignment.domain.user.service
 
+import bsm.insert.aiassignment.domain.analytics.entity.ActivityType
+import bsm.insert.aiassignment.domain.analytics.service.AnalyticsService
 import bsm.insert.aiassignment.domain.user.dto.*
 import bsm.insert.aiassignment.domain.user.entity.User
 import bsm.insert.aiassignment.domain.user.repository.UserRepository
@@ -16,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val analyticsService: AnalyticsService
 ) {
 
     @Transactional
@@ -32,9 +35,11 @@ class UserService(
         )
 
         val savedUser = userRepository.save(user)
+        analyticsService.logActivity(savedUser, ActivityType.SIGNUP)
         return UserResponse.from(savedUser)
     }
 
+    @Transactional
     fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException()
@@ -43,6 +48,7 @@ class UserService(
             throw InvalidPasswordException()
         }
 
+        analyticsService.logActivity(user, ActivityType.LOGIN)
         val token = jwtProvider.generateToken(user.id!!, user.email, user.role)
         return LoginResponse(token = token, user = UserResponse.from(user))
     }

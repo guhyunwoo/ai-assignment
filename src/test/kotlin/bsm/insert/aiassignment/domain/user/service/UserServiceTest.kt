@@ -1,5 +1,6 @@
 package bsm.insert.aiassignment.domain.user.service
 
+import bsm.insert.aiassignment.domain.analytics.service.AnalyticsService
 import bsm.insert.aiassignment.domain.user.dto.LoginRequest
 import bsm.insert.aiassignment.domain.user.dto.SignUpRequest
 import bsm.insert.aiassignment.domain.user.entity.Role
@@ -32,6 +33,9 @@ class UserServiceTest {
 
     @Mock
     private lateinit var jwtProvider: JwtProvider
+
+    @Mock
+    private lateinit var analyticsService: AnalyticsService
 
     @InjectMocks
     private lateinit var userService: UserService
@@ -72,6 +76,7 @@ class UserServiceTest {
         assertEquals("Test User", result.name)
         assertEquals(Role.MEMBER, result.role)
         verify(userRepository).save(any<User>())
+        verify(analyticsService).logActivity(any(), any())
     }
 
     @Test
@@ -111,6 +116,7 @@ class UserServiceTest {
         assertNotNull(result)
         assertEquals("jwt-token", result.token)
         assertEquals("test@example.com", result.user.email)
+        verify(analyticsService).logActivity(any(), any())
     }
 
     @Test
