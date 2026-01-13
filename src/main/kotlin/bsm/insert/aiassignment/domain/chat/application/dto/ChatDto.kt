@@ -4,7 +4,6 @@ import bsm.insert.aiassignment.domain.chat.domain.Chat
 import bsm.insert.aiassignment.domain.chat.domain.Thread
 import jakarta.validation.constraints.NotBlank
 import java.time.OffsetDateTime
-import java.util.*
 
 data class ChatRequest(
     @field:NotBlank(message = "질문은 필수입니다")
@@ -16,34 +15,34 @@ data class ChatRequest(
 )
 
 data class ChatResponse(
-    val id: UUID,
+    val id: Long,
     val question: String,
     val answer: String,
     val createdAt: OffsetDateTime,
-    val threadId: UUID
+    val threadId: Long
 ) {
     companion object {
         fun from(chat: Chat): ChatResponse {
             return ChatResponse(
-                id = chat.id!!,
+                id = chat.id,
                 question = chat.question,
                 answer = chat.answer,
                 createdAt = chat.createdAt,
-                threadId = chat.thread.id!!
+                threadId = chat.thread.id
             )
         }
     }
 }
 
 data class ThreadResponse(
-    val id: UUID,
+    val id: Long,
     val createdAt: OffsetDateTime,
     val chats: List<ChatResponse>
 ) {
     companion object {
         fun from(thread: Thread): ThreadResponse {
             return ThreadResponse(
-                id = thread.id!!,
+                id = thread.id,
                 createdAt = thread.createdAt,
                 chats = thread.chats.map { ChatResponse.from(it) }
             )
